@@ -25,6 +25,7 @@ This is intended to serve as an example for anyone wishing to implement their ow
 ### Data
 ```js
 {
+  admins: [ 'barista@email.com' ],
   open: true || false,
   drinks: [
     {
