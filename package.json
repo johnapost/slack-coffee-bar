@@ -1,0 +1,12 @@
+{
+  "name": "slack-coffee-bar",
+  "version": "0.0.1",
+  "description": "Slack coffee ordering system",
+  "repository": "https://github.com/johnapost/slack-coffee-bar",
+  "author": "John Apostol <notimetobeidle@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "firebase-tools": "^5.0.0"
+  }
+}
