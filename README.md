@@ -1,31 +1,41 @@
 # Slack Coffee Bar
+
 This is intended to serve as an example for anyone wishing to implement their own coffee ordering system in Slack.
+Also I'm doing this to possibly replace a coffee ordering system at work :).
 
 ## Planned Features
 
 ### Order UI
-* View coffee bar status
-* Order coffee/drinks through Slack message menus
-* Customize drink options 
-* Be notified of drink status
+
+- View coffee bar status
+- Order coffee/drinks through Slack message menus
+- Customize drink options
+- Be notified of drink status
 
 ### Admin UI
-* Adjust coffee bar status (open, closed)
-* Adjust coffee/drinks menu through Slack message menus (create, update, delete, hide)
-* Adjust customization options through Slack message text
-* View drink queue (as self-deleting messages)
-* Complete or deny drink requests
+
+- Adjust coffee bar status (open, closed)
+- Adjust coffee/drinks menu through Slack message menus (create, update, delete, hide)
+- Adjust customization options through Slack message text
+- View drink queue (as self-deleting messages)
+- Complete or deny drink requests
 
 ## Architecture
 
 ### Server(less)
-* Data stored on Firebase
-* All logic as short lived functions stored on Firebase, invoked as messages are interacted with
+
+- Data stored on Firebase
+- All logic as short lived functions stored on Firebase, invoked as messages are interacted with
 
 ### Data
+
 ```js
 {
-  admins: [ 'barista@email.com' ],
+  admins: [
+    {
+      email: 'barista@email.com'
+    }
+  ],
   open: true || false,
   drinks: [
     {
