@@ -4,6 +4,7 @@ import open from "./open";
 
 initializeApp(config().firebase);
 const db = firestore();
+db.settings({ timestampsInSnapshots: true });
 
 export type Event = {
   type: string;
@@ -18,8 +19,13 @@ export type Event = {
 export const events = https.onRequest(async ({ body }, res) => {
   console.log(body);
 
-  const event = <Event>body.event;
+  const { event } = body;
   const setOpen = open(db, event, res);
 
-  if (event.text === "open") return setOpen(true);
+  try {
+    if (event.text === "open") return setOpen(true);
+  } catch (err) {
+    console.error(err);
+    res.status(200).send();
+  }
 });

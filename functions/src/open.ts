@@ -1,23 +1,28 @@
 import { Response } from "express";
+import { WebClient } from "@slack/client";
 import { firestore } from "firebase-admin";
 import { Event } from ".";
+import checkAdmin from "./checkAdmin";
+import { token } from "./secret";
 
 export default (db: firestore.Firestore, event: Event, res: Response) => async (
   open: Boolean
 ) => {
-  try {
-    const admins = await db.collection("/admins").get();
+  const authorized = await checkAdmin(db, event);
 
-    let authorized = false;
-    admins.forEach(admin => {
-      if (admin.data().id === event.user) authorized = true;
-    });
+  if (!authorized) {
+    console.error("unauthorized");
+  } else {
+    console.log("authorized");
 
-    if (!authorized) return;
+    // Post commands to DB queue
 
-    // https://api.slack.com/methods/chat.postMessage
-  } catch (err) {
-    console.error(err);
-    res.send(err);
+    // const web = new WebClient(token);
+    // await web.chat.postMessage({
+    //   channel: event.channel,
+    //   text: "Opening Coffeebar. Let the drinks flow!"
+    // });
   }
+
+  res.status(200).send();
 };

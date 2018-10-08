@@ -10,9 +10,6 @@
     "deploy": "firebase deploy"
   },
   "devDependencies": {
-    "firebase-tools": "^5.0.0",
-    "tslint": "~5.8.0",
-    "tslint-config-prettier": "^1.15.0",
-    "typescript": "~2.8.3"
+    "firebase-tools": "^5.0.0"
   }
 }
