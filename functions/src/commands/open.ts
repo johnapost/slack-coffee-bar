@@ -1,9 +1,9 @@
 import { Response } from "express";
 import { WebClient } from "@slack/client";
 import { firestore } from "firebase-admin";
-import { Event } from ".";
-import checkAdmin from "./checkAdmin";
-import { token } from "./secret";
+import { Event } from "..";
+import checkAdmin from "../utils/checkAdmin";
+import { config } from "firebase-functions";
 
 export default (db: firestore.Firestore, event: Event, res: Response) => async (
   open: Boolean
@@ -15,13 +15,11 @@ export default (db: firestore.Firestore, event: Event, res: Response) => async (
   } else {
     console.log("authorized");
 
-    // Post commands to DB queue
-
-    // const web = new WebClient(token);
-    // await web.chat.postMessage({
-    //   channel: event.channel,
-    //   text: "Opening Coffeebar. Let the drinks flow!"
-    // });
+    const web = new WebClient(config().slack.token);
+    await web.chat.postMessage({
+      channel: event.channel,
+      text: "Opening Coffeebar. Let the drinks flow!"
+    });
   }
 
   res.status(200).send();

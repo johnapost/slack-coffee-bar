@@ -43,9 +43,6 @@
     "unified-signatures": {
       "severity": "warning"
     },
-    "no-unused-variable": {
-      "severity": "warning"
-    },
     "prefer-const": {
       "severity": "warning"
     },

@@ -1,5 +1,4 @@
 node_modules
 lib
 .firebaserc
-secret.ts
 firebase-debug.log

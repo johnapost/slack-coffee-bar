@@ -36,7 +36,13 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
       email: 'barista@email.com'
     }
   ],
-  open: true || false,
+  commandQueue: [
+    {
+      id: 'abc123'
+      type: 'SET_OPEN',
+      payload: true
+    }
+  ],
   drinks: [
     {
       id,
@@ -45,6 +51,7 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
       active: true || false,
     }
   ],
+  open: true || false,
   orders: [
     {
       id,

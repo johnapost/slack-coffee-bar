@@ -1,7 +1,7 @@
+import { config } from "firebase-functions";
 import { firestore } from "firebase-admin";
 import { WebClient } from "@slack/client";
-import { Event } from ".";
-import { token } from "./secret";
+import { Event } from "..";
 
 type Member = {
   id: string;
@@ -15,7 +15,7 @@ export default async (
   event: Event
 ): Promise<boolean> => {
   // Use token to make http request to Slack
-  const web = new WebClient(token);
+  const web = new WebClient(config().slack.token);
   const { members } = (await web.users.list()) as any;
 
   // Identify email from the user
