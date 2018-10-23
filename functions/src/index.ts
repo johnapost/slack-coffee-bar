@@ -4,7 +4,8 @@ import {
   firestore as firestoreFunctions
 } from "firebase-functions";
 import { initializeApp, firestore } from "firebase-admin";
-import processCommand from "./processCommand";
+import processCommand from "./utils/processCommand";
+import createCommand from "./utils/createCommand";
 
 initializeApp(config().firebase);
 const db = firestore();
@@ -22,18 +23,10 @@ export type Event = {
 
 export type Command = {
   type: string;
-  payload: string | Object;
-};
-
-const commands = {
-  open: {
-    type: "SET_OPEN",
-    payload: true
-  },
-  close: {
-    type: "SET_OPEN",
-    payload: false
-  }
+  payload: {
+    value: string | Object;
+    event: Event;
+  };
 };
 
 export const events = https.onRequest(async (req, res) => {
@@ -41,7 +34,7 @@ export const events = https.onRequest(async (req, res) => {
   const event = req.body.event as Event;
 
   // Check for possible command
-  const command = commands[event.text] || null;
+  const command = createCommand(event);
   if (command) {
     // Post command to DB queue
     await db
@@ -63,7 +56,7 @@ export const handleCommandQueue = firestoreFunctions
     const commandSnap = await commandDoc.get();
     if (commandSnap.exists) {
       const command = commandSnap.data() as Command;
-      processCommand(command);
+      processCommand(db, command);
       await commandDoc.delete();
     }
   });

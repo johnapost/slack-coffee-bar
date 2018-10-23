@@ -2,3 +2,4 @@ node_modules
 lib
 .firebaserc
 firebase-debug.log
+.vscode
