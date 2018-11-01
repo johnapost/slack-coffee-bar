@@ -17,12 +17,7 @@ export default async (
       await db
         .collection("status")
         .doc("statusDoc")
-        .set(
-          {
-            open: value
-          },
-          { merge: true }
-        );
+        .set({ open: value }, { merge: true });
 
       if (value) {
         await web.chat.postMessage({

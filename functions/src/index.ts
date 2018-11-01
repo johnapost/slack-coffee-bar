@@ -29,6 +29,8 @@ export type Command = {
   };
 };
 
+export type Interaction = {};
+
 export const events = https.onRequest(async (req, res) => {
   console.log(req.method, req.body);
   const event = req.body.event as Event;
@@ -46,6 +48,11 @@ export const events = https.onRequest(async (req, res) => {
       console.error("Error adding command", error);
     }
   }
+  return res.sendStatus(200);
+});
+
+export const interactions = https.onRequest(async (req, res) => {
+  console.log(req.method, req.body);
   return res.sendStatus(200);
 });
 
