@@ -14,7 +14,7 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
 
 ### Admin UI
 
-- Adjust coffee bar status (open, closed)
+- ~Adjust coffee bar status (open, closed)~
 - Adjust coffee/drinks menu through Slack message menus (create, update, delete, hide)
 - Adjust customization options through Slack message text
 - View drink queue (as self-deleting messages)
@@ -27,6 +27,10 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
 - Data stored on Firebase
 - All logic as short lived functions stored on Firebase, invoked as messages are interacted with
 
+### Config
+
+Uses firebase functions config. Set your slack token in the config with `./node_modules/.bin/firebase functions:config:set slack.token="YOUR_UNIQUE_SLACK_TOKEN"`
+
 ### Data
 
 ```js
@@ -36,7 +40,13 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
       email: 'barista@email.com'
     }
   ],
-  open: true || false,
+  commandQueue: [
+    {
+      id: 'abc123'
+      type: 'SET_OPEN',
+      payload: true
+    }
+  ],
   drinks: [
     {
       id,
@@ -54,6 +64,13 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
       processed: timestamp,
       status: 'queued' || 'completed' || 'denied',
       customizations: 'cold with almond milk'
+    }
+  ],
+  // Status is a collection, which will only have one document and a static ID
+  status: [
+    {
+      id,
+      open: true || false
     }
   ]
 }

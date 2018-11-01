@@ -1,9 +1,15 @@
-import { https, config } from "firebase-functions";
+import {
+  https,
+  config,
+  firestore as firestoreFunctions
+} from "firebase-functions";
 import { initializeApp, firestore } from "firebase-admin";
-import open from "./open";
+import processCommand from "./utils/processCommand";
+import createCommand from "./utils/createCommand";
 
 initializeApp(config().firebase);
 const db = firestore();
+db.settings({ timestampsInSnapshots: true });
 
 export type Event = {
   type: string;
@@ -15,11 +21,45 @@ export type Event = {
   channel_type: string;
 };
 
-export const events = https.onRequest(async ({ body }, res) => {
-  console.log(body);
+export type Command = {
+  type: string;
+  payload: {
+    value: string | Object;
+    event: Event;
+  };
+};
 
-  const event = <Event>body.event;
-  const setOpen = open(db, event, res);
+export const events = https.onRequest(async (req, res) => {
+  console.log(req.method, req.body);
+  const event = req.body.event as Event;
 
-  if (event.text === "open") return setOpen(true);
+  // Check for possible command
+  const command = createCommand(event);
+  if (command) {
+    // Post command to DB queue
+    try {
+      await db
+        .collection("commandQueue")
+        .doc(req.body.event_id)
+        .set(command);
+    } catch (error) {
+      console.error("Error adding command", error);
+    }
+  }
+  return res.sendStatus(200);
 });
+
+export const handleCommandQueue = firestoreFunctions
+  .document("commandQueue/{id}")
+  .onWrite(async (snap, context) => {
+    // Firebase functions don't guarantee a single execution
+    // We check that the command really exists and we can process it
+    const commandDoc = await db
+      .collection("commandQueue")
+      .doc(context.params.id);
+    const commandSnap = await commandDoc.get();
+    if (commandSnap.exists) {
+      const command = commandSnap.data() as Command;
+      await processCommand(db, command);
+    }
+  });
