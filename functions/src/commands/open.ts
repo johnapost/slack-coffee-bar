@@ -13,16 +13,30 @@ export default async (
   if (authorized) {
     const web = new WebClient(config().slack.token);
 
-    if (value) {
-      await web.chat.postMessage({
-        channel: event.channel,
-        text: `Opening Coffeebar. Let the drinks flow!`
-      });
-    } else {
-      await web.chat.postMessage({
-        channel: event.channel,
-        text: `Closing Coffeebar. Ta ta for now!`
-      });
+    try {
+      await db
+        .collection("status")
+        .doc("statusDoc")
+        .set(
+          {
+            open: value
+          },
+          { merge: true }
+        );
+
+      if (value) {
+        await web.chat.postMessage({
+          channel: event.channel,
+          text: `Opening Coffeebar. Let the drinks flow!`
+        });
+      } else {
+        await web.chat.postMessage({
+          channel: event.channel,
+          text: `Closing Coffeebar. Ta ta for now!`
+        });
+      }
+    } catch (error) {
+      console.error("Error setting open status", error);
     }
   }
 };

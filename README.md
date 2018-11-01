@@ -51,7 +51,6 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
       active: true || false,
     }
   ],
-  open: true || false,
   orders: [
     {
       id,
@@ -61,6 +60,13 @@ Also I'm doing this to possibly replace a coffee ordering system at work :).
       processed: timestamp,
       status: 'queued' || 'completed' || 'denied',
       customizations: 'cold with almond milk'
+    }
+  ],
+  // Status is a collection, which will only have one document and a static ID
+  status: [
+    {
+      id,
+      open: true || false
     }
   ]
 }

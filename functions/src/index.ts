@@ -37,10 +37,14 @@ export const events = https.onRequest(async (req, res) => {
   const command = createCommand(event);
   if (command) {
     // Post command to DB queue
-    await db
-      .collection("commandQueue")
-      .doc(req.body.event_id)
-      .set(command);
+    try {
+      await db
+        .collection("commandQueue")
+        .doc(req.body.event_id)
+        .set(command);
+    } catch (error) {
+      console.error("Error adding command", error);
+    }
   }
   return res.sendStatus(200);
 });
