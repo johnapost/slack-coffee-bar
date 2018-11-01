@@ -4,21 +4,25 @@ import { Command } from "..";
 import checkAdmin from "../utils/checkAdmin";
 import { config } from "firebase-functions";
 
-export default (
+export default async (
   db: firestore.Firestore,
-  { payload: { event } }: Command
-) => async (open: Boolean) => {
+  { payload: { event, value } }: Command
+) => {
   const authorized = await checkAdmin(db, event);
 
-  if (!authorized) {
-    console.error("unauthorized");
-  } else {
-    console.log("authorized");
-
+  if (authorized) {
     const web = new WebClient(config().slack.token);
-    await web.chat.postMessage({
-      channel: event.channel,
-      text: `Opening Coffeebar. Let the drinks flow! (${open})`
-    });
+
+    if (value) {
+      await web.chat.postMessage({
+        channel: event.channel,
+        text: `Opening Coffeebar. Let the drinks flow!`
+      });
+    } else {
+      await web.chat.postMessage({
+        channel: event.channel,
+        text: `Closing Coffeebar. Ta ta for now!`
+      });
+    }
   }
 };

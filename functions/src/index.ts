@@ -56,7 +56,6 @@ export const handleCommandQueue = firestoreFunctions
     const commandSnap = await commandDoc.get();
     if (commandSnap.exists) {
       const command = commandSnap.data() as Command;
-      await commandDoc.delete();
       await processCommand(db, command);
     }
   });
